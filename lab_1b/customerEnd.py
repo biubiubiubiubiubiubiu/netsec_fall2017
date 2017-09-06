@@ -1,6 +1,8 @@
+# The classes used by customer end
+
 from playground.network.packet import PacketType
 from playground.network.packet.fieldtypes import UINT16, STRING, \
-                                                 ComplexFieldType, PacketFields, ListFieldType
+                                                 ComplexFieldType, PacketFields, ListFieldType, INT32
 
 # Customer end: "Request Menu" message
 class RequestMenu(PacketType):
@@ -18,18 +20,13 @@ class Order(PacketType):
 
     DEFINITION_IDENTIFIER = "lab1b.Ruofan.Order"
     DEFINITION_VERSION = "1.0"
-
-    class OrderContent(PacketFields):
-        FIELDS = [
-            ("ordered food", STRING),
-            ("number", UINT16)
-        ]
     
     FIELDS = [
         ("ID", UINT16),
         ("name", STRING),
         ("tableNumber", UINT16),
-        ("ordered content", ListFieldType(ComplexFieldType(OrderContent)))
+        ("ordered_content", ListFieldType(STRING)),
+        ("quantity", ListFieldType(INT32))
     ]
 
 
@@ -41,7 +38,7 @@ class CustomerErrorMessage(PacketType):
 
     FIELDS = [
         ("ID", STRING),
-        ("Error Message", STRING)
+        ("Error_Message", STRING)
     ]
 
 

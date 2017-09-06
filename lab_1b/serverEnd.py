@@ -1,3 +1,5 @@
+# The classes used by server end
+
 from playground.network.packet import PacketType
 from playground.network.packet.fieldtypes import UINT16, STRING, \
                                                  ComplexFieldType, PacketFields, ListFieldType
@@ -10,17 +12,17 @@ class SendMenu(PacketType):
 
     class MenuContent(PacketFields):
         FIELDS = [
-            ("sandwich", ListFieldType(STRING)),
-            ("salads and soups", ListFieldType(STRING)),
             ("Appetizers", ListFieldType(STRING)),
-            ("desert", ListFieldType(STRING))
+            ("Sandwiches", ListFieldType(STRING)),
+            ("Salads_and_Soups", ListFieldType(STRING)),
+            ("Desert", ListFieldType(STRING))
         ]
 
     FIELDS = [
         ("ID", UINT16),
         ("name", STRING),
         ("tableNumber", UINT16),
-        ("MenuContent", ComplexFieldType(MenuContent))
+        ("menuContent", ComplexFieldType(MenuContent))
     ]
 
 # Server end: Cooking message
@@ -45,7 +47,7 @@ class MissingDish(PacketType):
         ("ID", UINT16),
         ("name", STRING),
         ("tableNumber", UINT16),
-        ("ordered content", ListFieldType(STRING))
+        ("missing", ListFieldType(STRING))
     ]
 
 # Server end: Nothing Message

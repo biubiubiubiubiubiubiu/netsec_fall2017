@@ -33,14 +33,15 @@ def basicUnitTest():
     packet.trailer.subfield2 = 500
     print(packet.ls)
     
-    packet.ls = list()
-    packet.ls.append("asdfas")
+    packet.ls = ["asdfa","Asdfasdf"]
+    print(packet.ls)
 
     serializedData = packet.__serialize__()
-    # restoredPacket = PacketType.Deserialize(serializedData)
+    restoredPacket = PacketType.Deserialize(serializedData)
     
-    # assert packet.header.subfield1 == restoredPacket.header.subfield1 
-    # assert packet.field2 == restoredPacket.field2
-    # print("Success!")
+    assert packet.header.subfield1 == restoredPacket.header.subfield1 
+    assert packet.ls[0] == restoredPacket.ls[0]
+    assert packet.ls[1] == restoredPacket.ls[1]
+    print("Success!")
 if __name__=="__main__":
     basicUnitTest()
