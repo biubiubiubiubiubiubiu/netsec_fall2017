@@ -15,7 +15,7 @@ def basicUnitTest():
             FIELDS = [("subfield1",Uint({Bits:16})), ("subfield2",Uint({Bits:16}))]
         
         FIELDS = [  
-                    ("ls", ListFieldType(SubFields))
+                    ("ls", ListFieldType(ComplexFieldType(SubFields)))
                 ]
     
     packet = TestPacket1()

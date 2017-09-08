@@ -11,7 +11,7 @@ def basicUnitTest():
     requestMenu = RequestMenu()
     requestMenu.tableNumber = 12
     requestMenu.name = "David"
-    serializedData = requestMenu.__serialize__();
+    serializedData = requestMenu.__serialize__()
     restoredPacket = PacketType.Deserialize(serializedData)
     
     assert requestMenu.tableNumber == restoredPacket.tableNumber
