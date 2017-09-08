@@ -2,7 +2,6 @@ from customerEnd import *
 from serverEnd import *
 from playground.network.packet import PacketType
 import asyncio
-import copy
 class RestaurantServerProtocol:
     
     def __init__(self, stockList, menu):
@@ -24,24 +23,17 @@ class RestaurantServerProtocol:
                 # Now the restaurant has received a menu request, it should respond the menu it has
                 print('Restaurant: Get menu request from customer: {!r}, table number: {!r}'.format(pkt.name, \
                                                                                               pkt.tableNumber))
-                checkMes = checking()
-                checkMes.message = "checked!"
-                self.transport.write(checkMes.__serialize__())
-
-                sendMenu = copy.deepcopy(self.menu)
                 # Generate id
-                sendMenu.ID = self.counter
+                self.menu.ID = self.counter
                 self.counter += 1
-                sendMenu.tableNumber = pkt.tableNumber
-                sendMenu.name = pkt.name
-                print("sendMenu: {!r}".format(type(sendMenu)))
-                print("Restaurant: Sending back the menu to customer: {!r}, table number: {!r}".format(sendMenu.name,\
-                                                                                                         sendMenu.tableNumber))
+                self.menu.tableNumber = pkt.tableNumber
+                self.menu.name = pkt.name
+                print("Restaurant: Sending back the menu to customer: {!r}, table number: {!r}".format(self.menu.name,\
+                                                                                                         self.menu.tableNumber))
                 # Things will go wrong if you uncomment the following code
                 # serialized = sendMenu.__serialize__()
                 # print(type(PacketType.Deserialize(serialized)))
-                print(sendMenu.menuContent.Appetizers)
-                self.transport.write(sendMenu.__serialize__())
+                self.transport.write(self.menu.__serialize__())
     
 
 

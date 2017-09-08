@@ -61,16 +61,6 @@ def basicUnitTest():
     print("Submission: Testing sending menu")
     client.requestMenu()
     print("======================================================================")
-    print("Checking the serialization on ComplexFieldType:")
-    temp = server.formatMenu(menu)
-    temp.ID = 1
-    temp.name = "adf"
-    temp.tableNumber = 20
-    serialized = temp.__serialize__()
-    retrieved = PacketType.Deserialize(serialized)
-    print("retrieveID: {!r}".format(retrieved.ID))
-    print("retrieveName: {!r}".format(retrieved.name))
-    print("retrieveNum: {!r}".format(retrieved.tableNumber))
 
 if __name__ == "__main__":
     basicUnitTest()
