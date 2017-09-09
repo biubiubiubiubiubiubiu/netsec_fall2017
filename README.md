@@ -9,3 +9,8 @@ The repository for the 2017 Fall JHU Network Security Project
     ```
     $ python3 submission.py
     ```
+
+* For lab_1c, cd into lab_1c and run:
+    ```
+    $ python3 submission.py
+    ```
