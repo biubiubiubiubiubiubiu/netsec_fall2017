@@ -25,14 +25,6 @@ class SendMenu(PacketType):
         ("menuContent", ComplexFieldType(MenuContent))
     ]
 
-class checking(PacketType):
-
-    DEFINITION_IDENTIFIER = "lab1b.Ruofan.checking"
-    DEFINITION_VERSION = "1.0"
-
-    FIELDS = [
-        ("message", STRING)
-    ]
 
 # Server end: Cooking message
 class Cooking(PacketType):
@@ -55,8 +47,10 @@ class MissingDish(PacketType):
     FIELDS = [
         ("ID", UINT16),
         ("name", STRING),
+        ("message", STRING),
         ("tableNumber", UINT16),
-        ("missing", ListFieldType(STRING))
+        ("missing", ListFieldType(STRING)),
+        ("unavailable", ListFieldType(STRING))
     ]
 
 # Server end: Nothing Message
