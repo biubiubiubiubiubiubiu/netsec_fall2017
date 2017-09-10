@@ -19,13 +19,18 @@ class CustomerClientProtocol:
         self._deserializer.update(data)
         for pkt in self._deserializer.nextPackets():
             if isinstance(pkt, SendMenu):
+                self.currentID = pkt.ID
                 if pkt.name != self.customerName or pkt.tableNumber != self.tableNumber:
                     print("Customer: wrong order sent! Sending error message")
+                    customerErrorMessage = CustomerErrorMessage()
+                    customerErrorMessage.ID = self.currentID
+                    customerErrorMessage.Error_Message = "Wrong Order"
+                    self.transport.write(customerErrorMessage.__serialize__())
 
                 print("Customer: Received a Menu! Reconstructing the menu...")
                 self.reconstructMenu(pkt)
                 print("Customer: The menu's content received is: {!r}".format(self.receivedMenu))
-                self.currentID = pkt.ID
+                
             
             elif isinstance(pkt, Cooking):
                 print("Customer: recerived a Cooking message! Send back Thanks!")
@@ -48,6 +53,9 @@ class CustomerClientProtocol:
 
             elif isinstance(pkt, Nothing):
                 print("Customer: received Nothing message, do nothing!")    
+            
+            else:
+                print("Wrong packet received, aborting...")
     
     def connection_lost(self, exc):
         print('The server closed the connection')

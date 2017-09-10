@@ -35,6 +35,10 @@ class RestaurantServerProtocol:
                 # serialized = sendMenu.__serialize__()
                 # print(type(PacketType.Deserialize(serialized)))
                 self.transport.write(self.menu.__serialize__())
+
+            elif isinstance(pkt, CustomerErrorMessage):
+                print("Restaurant: received customer's complain! Please resend the menu")
+                
             elif isinstance(pkt, Order):
                 print("Restaurant: received customer's order from name: {!r}, tableNumber: {!r}".format(pkt.name, pkt.tableNumber))
                 # Validate the order
@@ -96,6 +100,9 @@ class RestaurantServerProtocol:
             elif isinstance(pkt, Thanks):
                 print("Restaurant: Thanks message received from customer: {!r}, table number: {!r}".\
                         format(pkt.name, pkt.tableNumber))   
+            
+            else:
+                print("Wrong packet received, aborting...")
 
 
     def formatMenu(self, menu):
