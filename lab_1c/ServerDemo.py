@@ -27,7 +27,9 @@ class RestaurantServerProtocol:
     def data_received(self, data):
         self._deserializer.update(data)
         for pkt in self._deserializer.nextPackets():
-            if isinstance(pkt, RequestMenu) and self.status == self.WAITING:
+            if pkt is None:
+                pass
+            elif isinstance(pkt, RequestMenu) and self.status == self.WAITING:
                 # Now the restaurant has received a menu request, it should respond the menu it has
                 print('Restaurant: Get menu request from customer: {!r}, table number: {!r}'.format(pkt.name, \
                                                                                               pkt.tableNumber))
@@ -116,7 +118,7 @@ class RestaurantServerProtocol:
                 self.status = self.WAITING  
             
             else:
-                pass
+                print("Restaurant: Wrong packet received, current status: {!r}, type: {!r}, aborting...".format(self.status, type(pkt)))
 
     def formatMenu(self, menu):
         sendMenu = SendMenu()

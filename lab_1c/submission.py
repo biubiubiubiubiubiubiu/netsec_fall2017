@@ -1,5 +1,6 @@
 from ClientDemo import CustomerClientProtocol
 from ServerDemo import RestaurantServerProtocol
+
 from playground.network.packet import PacketType
 from playground.asyncio_lib.testing import TestLoopEx
 from playground.network.testing import MockTransportToStorageStream

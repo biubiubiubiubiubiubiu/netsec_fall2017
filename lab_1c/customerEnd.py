@@ -53,3 +53,5 @@ class Thanks(PacketType):
         ("name", STRING),
         ("tableNumber", UINT16),
     ]
+
+
