@@ -66,6 +66,8 @@ def basicUnitTest():
     for key in menu.keys():
         assert menu[key] == client.receivedMenu[key]
         assert client.receivedMenu[key] == server.originalMenu[key]
+    assert client.status == client.SEND_ORDER
+    assert server.status == server.WAITING_ORDER
     print("======================================================================")
     print("Submission: Testing sending order from Client...")
 
@@ -76,8 +78,11 @@ def basicUnitTest():
         "Buffalo Fried Cauliflower": 1
     }
     client.sendOrder(ordered)
+    assert client.status == client.WAITING
+    assert server.status == server.WAITING
     print(" ")
     print("2) Testing ordering dishes that does not exist in menu...(should fail)")
+    client.requestMenu()
     ordered = {
         "Bacon Avocado Chicken": 1, 
         "Buffalo Chicken Ranch": 2,
@@ -88,6 +93,7 @@ def basicUnitTest():
     client.sendOrder(ordered)
     print(" ")
     print("3) Testing ordering dishes that are out of stock...(should fail)")
+    client.requestMenu()
     ordered = {
         "Bacon Avocado Chicken": 1, 
         "Buffalo Chicken Ranch": 2,
@@ -97,6 +103,7 @@ def basicUnitTest():
     client.sendOrder(ordered)
     print(" ")
     print("4) Testing ordering dishes that are both not exist and out of stock...(should fail)")
+    client.requestMenu()
     ordered = {
         "Bacon Avocado Chicken": 1, 
         "Buffalo Chicken Ranch": 2,
@@ -108,6 +115,7 @@ def basicUnitTest():
     client.sendOrder(ordered)
     print(" ")
     print("5) Testing ordering nothing")
+    client.requestMenu()
     client.sendOrder({})
     print("======================================================================")
 
