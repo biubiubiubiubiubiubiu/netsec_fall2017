@@ -8,6 +8,16 @@ from playground.network.testing import MockTransportToProtocol
 import playground
 import asyncio, sys
 
+class CustomerControl:
+
+    def __init__(self):
+        self.protocal = None
+
+    def buildProtocol(customerName, tableNumber):
+        return CustomerClientProtocol(customerName, tableNumber)
+
+
+
 def basicUnitTest():
     print("WARNING: Since most of the data only exist in transmission, this unit test will use printing method to show if the code works")
     print("")
@@ -56,8 +66,10 @@ def basicUnitTest():
     }
     client = CustomerClientProtocol(clientName, tableNumber)
     server = RestaurantServerProtocol(stockList, menu)
-    transportToServer = MockTransportToProtocol(server)
-    transportToClient = MockTransportToProtocol(client)
+    transportToServer = MockTransportToProtocol(myProtocol=client)
+    transportToClient = MockTransportToProtocol(myProtocol=server)
+    transportToServer.setRemoteTransport(transportToClient)
+    transportToClient.setRemoteTransport(transportToServer)
     client.connection_made(transportToServer)
     server.connection_made(transportToClient)
     print("======================================================================")
@@ -121,7 +133,7 @@ def basicUnitTest():
     print("======================================================================")
 
 if __name__ == "__main__":
-    
+    # basicUnitTest()
     echoArgs = {}
     
     args= sys.argv[1:]
@@ -133,11 +145,9 @@ if __name__ == "__main__":
         else:
             echoArgs[i] = arg
             i+=1
-    
-    if not 0 in echoArgs:
-        sys.exit(USAGE)
-
-    mode = echoArgs[0]
+    mode = ""
+    if len(echoArgs) > 0:
+        mode = echoArgs[0]
     print("WARNING: Since most of the data only exist in transmission, this unit test will use printing method to show if the code works")
     print("")
     clientName = "peter"
@@ -196,5 +206,19 @@ if __name__ == "__main__":
         transport, protocol = loop.run_until_complete(coro)
         print("Customer Connected. Starting UI t:{}. p:{}".format(transport, protocol))
         loop.add_reader(sys.stdin, protocol.requestMenu)
+        
+        print("Submission: Testing sending order from Client...")
+
+        print("1) Testing normal orders...(should success)")
+        ordered = {
+            "Bacon Avocado Chicken": 1, 
+            "Buffalo Chicken Ranch": 2,
+            "Buffalo Fried Cauliflower": 1
+        }
+        for i in range(0, 10):
+            protocol.requestMenu()
+            protocol.status = 0
+        # protocol.requestMenu()
+        # protocol.sendOrder(ordered)
         loop.run_forever()
         loop.close()

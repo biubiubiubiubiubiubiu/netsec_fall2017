@@ -17,14 +17,15 @@ class RestaurantServerProtocol(asyncio.Protocol):
         self.menu = self.formatMenu(menu)
         self.counter = 1;
         self.status = None
-
+        self._deserializer = PacketType.Deserializer()
+        
     def connection_made(self, transport):
         self.transport = transport
-        self._deserializer = PacketType.Deserializer()
         print('Restaurant: Got Connection from a customer!')
         self.status = self.WAITING
 
     def data_received(self, data):
+        print("Hey")
         self._deserializer.update(data)
         for pkt in self._deserializer.nextPackets():
             if pkt is None:

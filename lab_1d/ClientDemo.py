@@ -16,12 +16,13 @@ class CustomerClientProtocol(asyncio.Protocol):
         self.receivedMenu = None
         self.currentID = None
         self.status = None
-    
+        self._deserializer = PacketType.Deserializer()
+        
     def connection_made(self, transport):
         self.transport = transport
-        self._deserializer = PacketType.Deserializer()
         self.status = self.WAITING
         print("Customer: Connection made to a restaurant!")
+        #self.requestMenu()
     
     def data_received(self, data):
         self._deserializer.update(data)
@@ -108,5 +109,5 @@ class CustomerClientProtocol(asyncio.Protocol):
             self.status = self.WAITING_COMFIRMATION
             self.transport.write(order.__serialize__())
         else:
-            print("Wrong status for requestMenu, current status: {!r}".format(self.status))    
+            print("Wrong status for sendOrder, current status: {!r}".format(self.status))    
         

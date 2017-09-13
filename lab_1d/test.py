@@ -134,10 +134,10 @@ class CustomerClientProtocol(asyncio.Protocol):
         self.receivedMenu = None
         self.currentID = None
         self.status = None
-
+        self._deserializer = PacketType.Deserializer()
+        
     def connection_made(self, transport):
         self.transport = transport
-        self._deserializer = PacketType.Deserializer()
         self.status = self.WAITING
         print("Customer: Connection made to a restaurant!")
 
@@ -243,10 +243,10 @@ class RestaurantServerProtocol(asyncio.Protocol):
         self.menu = self.formatMenu(menu)
         self.counter = 1;
         self.status = None
-
+        self._deserializer = PacketType.Deserializer()
+    
     def connection_made(self, transport):
         self.transport = transport
-        self._deserializer = PacketType.Deserializer()
         print('Restaurant: Got Connection from a customer!')
         self.status = self.WAITING
 
@@ -466,6 +466,8 @@ def basicUnitTest():
     # server = RestaurantServerProtocol(stockList, menu)
     transportToServer = MockTransportToProtocol(server)
     transportToClient = MockTransportToProtocol(client)
+    transportToServer.setRemoteTransport(transportToClient) 
+    transportToClient.setRemoteTransport(transportToServer)
     client.connection_made(transportToServer)
     server.connection_made(transportToClient)
     print("======================================================================")
