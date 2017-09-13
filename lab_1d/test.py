@@ -3,7 +3,7 @@
 from playground.network.packet import PacketType
 from playground.network.packet.fieldtypes import UINT16, STRING, \
     ComplexFieldType, PacketFields, ListFieldType, INT32
-
+import asyncio, sys
 
 # Customer end: "Request Menu" message
 class RequestMenu(PacketType):
@@ -120,7 +120,7 @@ class Nothing(PacketType):
 
 
 
-class CustomerClientProtocol:
+class CustomerClientProtocol(asyncio.Protocol):
     # Some statuses for customer end
     WAITING = 0
     WAITING_ORDER = 1
@@ -228,7 +228,7 @@ class CustomerClientProtocol:
 
 
 
-class RestaurantServerProtocol:
+class RestaurantServerProtocol(asyncio.Protocol):
     # Some statuses for server end
     WAITING = 0
     WAITING_ORDER = 1
@@ -411,7 +411,7 @@ from playground.network.packet import PacketType
 from playground.asyncio_lib.testing import TestLoopEx
 from playground.network.testing import MockTransportToStorageStream
 from playground.network.testing import MockTransportToProtocol
-
+import playground
 import asyncio
 
 def basicUnitTest():
@@ -460,8 +460,10 @@ def basicUnitTest():
             "Triple Berry Crumble Cake"
         ]
     }
-    client = CustomerClientProtocol(clientName, tableNumber)
-    server = RestaurantServerProtocol(stockList, menu)
+    client = playground.getConnector().create_playground_server(lambda: CustomerClientProtocol(clientName, tableNumber), 101)
+    server = playground.getConnector().create_playground_connection(lambda: RestaurantServerProtocol(stockList, menu), "20174.1.1.1", 101)
+    # client = CustomerClientProtocol(clientName, tableNumber)
+    # server = RestaurantServerProtocol(stockList, menu)
     transportToServer = MockTransportToProtocol(server)
     transportToClient = MockTransportToProtocol(client)
     client.connection_made(transportToServer)
