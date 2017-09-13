@@ -216,8 +216,9 @@ if __name__ == "__main__":
             "Buffalo Fried Cauliflower": 1
         }
         for i in range(0, 10):
-            protocol.requestMenu()
             protocol.status = 0
+            protocol.requestMenu()
+            
         # protocol.requestMenu()
         # protocol.sendOrder(ordered)
         loop.run_forever()
