@@ -25,7 +25,6 @@ class RestaurantServerProtocol(asyncio.Protocol):
         self.status = self.WAITING
 
     def data_received(self, data):
-        print("Hey")
         self._deserializer.update(data)
         for pkt in self._deserializer.nextPackets():
             if pkt is None:

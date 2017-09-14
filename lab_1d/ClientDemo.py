@@ -9,13 +9,14 @@ class CustomerClientProtocol(asyncio.Protocol):
     SEND_ORDER = 2
     WAITING_COMFIRMATION = 3
     
-    def __init__(self, customerName, tableNumber):
+    def __init__(self, customerName, tableNumber, ordered):
         self.transport = None
         self.customerName = customerName
         self.tableNumber = tableNumber
         self.receivedMenu = None
         self.currentID = None
         self.status = None
+        self.ordered = ordered
         self._deserializer = PacketType.Deserializer()
         
     def connection_made(self, transport):
@@ -41,6 +42,7 @@ class CustomerClientProtocol(asyncio.Protocol):
                 self.reconstructMenu(pkt)
                 print("Customer: The menu's content received is: {!r}".format(self.receivedMenu))
                 self.status = self.SEND_ORDER
+                self.sendOrder(self.ordered)
             
             elif isinstance(pkt, Cooking) and self.status == self.WAITING_COMFIRMATION:
                 print("Customer: recerived a Cooking message! Send back Thanks!")

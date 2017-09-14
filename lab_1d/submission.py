@@ -6,8 +6,7 @@ from playground.asyncio_lib.testing import TestLoopEx
 from playground.network.testing import MockTransportToStorageStream
 from playground.network.testing import MockTransportToProtocol
 import playground
-import asyncio, sys
-
+import asyncio, sys, time
 class CustomerControl:
 
     def __init__(self):
@@ -201,8 +200,13 @@ if __name__ == "__main__":
         loop.close()
 
     else:
+        ordered = {
+            "Bacon Avocado Chicken": 1, 
+            "Buffalo Chicken Ranch": 2,
+            "Buffalo Fried Cauliflower": 1
+        }
         remoteAddress = "20174.1.1.1"
-        coro = playground.getConnector().create_playground_connection(lambda: CustomerClientProtocol(clientName, tableNumber), remoteAddress, 101)
+        coro = playground.getConnector().create_playground_connection(lambda: CustomerClientProtocol(clientName, tableNumber, ordered), remoteAddress, 101)
         transport, protocol = loop.run_until_complete(coro)
         print("Customer Connected. Starting UI t:{}. p:{}".format(transport, protocol))
         loop.add_reader(sys.stdin, protocol.requestMenu)
@@ -210,14 +214,15 @@ if __name__ == "__main__":
         print("Submission: Testing sending order from Client...")
 
         print("1) Testing normal orders...(should success)")
-        ordered = {
-            "Bacon Avocado Chicken": 1, 
-            "Buffalo Chicken Ranch": 2,
-            "Buffalo Fried Cauliflower": 1
-        }
-        for i in range(0, 10):
+        
+        count = 0
+        for i in range(0, 5):
+            count += 1
             protocol.status = 0
             protocol.requestMenu()
+            if protocol.status == 2:
+                print(count)
+                break
             
         # protocol.requestMenu()
         # protocol.sendOrder(ordered)
