@@ -205,7 +205,7 @@ if __name__ == "__main__":
             "Buffalo Chicken Ranch": 2,
             "Buffalo Fried Cauliflower": 1
         }
-        remoteAddress = "20174.1.1.1"
+        remoteAddress = mode
         coro = playground.getConnector().create_playground_connection(lambda: CustomerClientProtocol(clientName, tableNumber, ordered), remoteAddress, 101)
         transport, protocol = loop.run_until_complete(coro)
         print("Customer Connected. Starting UI t:{}. p:{}".format(transport, protocol))
