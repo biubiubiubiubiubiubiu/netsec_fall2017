@@ -192,6 +192,7 @@ if __name__ == "__main__":
         ]     
     }
     loop = asyncio.get_event_loop()
+    loop.set_debug(enabled=True)
     if mode.lower() == "server":
         coro = playground.getConnector().create_playground_server(lambda: RestaurantServerProtocol(stockList, menu), 101)
         server = loop.run_until_complete(coro)
@@ -200,6 +201,9 @@ if __name__ == "__main__":
         loop.close()
 
     else:
+        print("Submission: Testing sending order from Client...")
+
+        print("1) Testing normal orders...(should success)")
         ordered = {
             "Bacon Avocado Chicken": 1, 
             "Buffalo Chicken Ranch": 2,
@@ -209,22 +213,22 @@ if __name__ == "__main__":
         coro = playground.getConnector().create_playground_connection(lambda: CustomerClientProtocol(clientName, tableNumber, ordered), remoteAddress, 101)
         transport, protocol = loop.run_until_complete(coro)
         print("Customer Connected. Starting UI t:{}. p:{}".format(transport, protocol))
-        loop.add_reader(sys.stdin, protocol.requestMenu)
+        protocol.requestMenu()
         
-        print("Submission: Testing sending order from Client...")
-
-        print("1) Testing normal orders...(should success)")
+        # time.sleep(5)
+        # print("2) Testing ordering dishes that does not exist in menu...(should fail)")
         
-        count = 0
-        for i in range(0, 5):
-            count += 1
-            protocol.status = 0
-            protocol.requestMenu()
-            if protocol.status == 2:
-                print(count)
-                break
-            
+        # ordered = {
+        #     "Bacon Avocado Chicken": 1, 
+        #     "Buffalo Chicken Ranch": 2,
+        #     "Buffalo Fried Cauliflower": 1,
+        #     "Something not exist1": 10,
+        #     "Something not exist3": 12
+        # }
+        # coro = playground.getConnector().create_playground_connection(lambda: CustomerClientProtocol(clientName, tableNumber, ordered), remoteAddress, 101)
+        # transport, protocol = loop.run_until_complete(coro)
+        # print("Customer Connected. Starting UI t:{}. p:{}".format(transport, protocol))
         # protocol.requestMenu()
-        # protocol.sendOrder(ordered)
+
         loop.run_forever()
         loop.close()
